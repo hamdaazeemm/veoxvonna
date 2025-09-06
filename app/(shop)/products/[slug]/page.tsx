@@ -65,7 +65,13 @@ export default async function ProductDetail(props: { params: Promise<{ slug: str
 
           {/* Add to Cart Button */}
           <div className="mt-6">
-            <AddToCartButton productId={product.product_id} />
+            {/* //<AddToCartButton productId={product.product_id} /> */}
+            <AddToCartButton 
+  productId={product.product_id}
+  name={product.name}
+  price={currentPrice}
+  image_url={mainImage?.image_url}
+/>
           </div>
         </div>
       </div>

@@ -1,4 +1,6 @@
-// app/auth/login/page.tsx
+// 
+
+
 'use client'
 
 import { useState } from 'react'
@@ -30,10 +32,10 @@ export default function LoginPage() {
         setError(error.message)
         return
       }
-       window.location.href = redirectTo
-      // Success - redirect to the intended page or admin dashboard
-      router.push(redirectTo)
-      router.refresh()
+      
+      // Use window.location for full page reload to refresh middleware state
+      window.location.href = redirectTo
+      
     } catch (error) {
       setError('An error occurred during login')
     } finally {
