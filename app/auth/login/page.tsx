@@ -1,111 +1,159 @@
-// 
-
-
-'use client'
-
-import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+//app/auth/login/page.tsx
+import LoginClient from './LoginClient'
+import { AuthErrorBoundary } from '@/components/auth/error-boundary'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirect') || '/admin/dashboard'
-  const supabase = createClientComponentClient()
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      if (error) {
-        setError(error.message)
-        return
-      }
-      
-      // Use window.location for full page reload to refresh middleware state
-      window.location.href = redirectTo
-      
-    } catch (error) {
-      setError('An error occurred during login')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Admin Login
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Veoxvonna Admin Panel
-          </p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your email"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter your password"
-              />
-            </div>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <AuthErrorBoundary>
+      <LoginClient />
+    </AuthErrorBoundary>
   )
 }
+
+
+
+
+
+
+
+
+// // // lib/supabase/server.ts
+// // import { createServerClient as createSupabaseServerClient } from '@supabase/ssr'
+// // import { cookies } from 'next/headers'
+// // import type { Database } from '@/lib/supabase/types'
+
+// // // Safe cookie value parser
+// // function safeParseCookieValue(value: string): string {
+// //   if (!value) return value
+  
+// //   // If it's a base64 encoded value that starts with "base64-eyJ"
+// //   if (value.startsWith('base64-eyJ')) {
+// //     try {
+// //       // Extract the base64 part (remove "base64-" prefix)
+// //       const base64Content = value.substring(7)
+// //       // Decode and return as string without parsing as JSON
+// //       const decoded = atob(base64Content)
+// //       return decoded
+// //     } catch (error) {
+// //       console.warn(`Failed to decode base64 cookie value: ${value.substring(0, 20)}...`)
+// //       return ''
+// //     }
+// //   }
+  
+// //   return value
+// // }
+
+// // export const createServerClient = () => {
+// //   // TEMPORARY: Return a mock client to avoid all cookie parsing issues
+// //   // This completely bypasses Supabase SSR until the project is restored
+// //   console.log('Using mock Supabase client to avoid cookie parsing issues during restoration')
+  
+// //   return {
+// //     from: (table: string) => ({ 
+// //       select: () => ({ data: [], error: null }),
+// //       insert: () => ({ data: [], error: null }),
+// //       update: () => ({ data: [], error: null }),
+// //       delete: () => ({ data: [], error: null }),
+// //       eq: () => ({ data: [], error: null }),
+// //       single: () => ({ data: null, error: null }),
+// //       order: () => ({ data: [], error: null }),
+// //       limit: () => ({ data: [], error: null }),
+// //       gte: () => ({ data: [], error: null }),
+// //       lt: () => ({ data: [], error: null }),
+// //       gt: () => ({ data: [], error: null }),
+// //     }),
+// //     auth: {
+// //       getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+// //       getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+// //       signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: null }),
+// //       signOut: () => Promise.resolve({ error: null }),
+// //     }
+// //   } as any
+// // }
+
+// // lib/supabase/server.ts
+// import { createServerClient as createSupabaseServerClient } from '@supabase/ssr'
+// import { cookies } from 'next/headers'
+// import type { Database } from '@/lib/supabase/types'
+
+// // Safe cookie value parser
+// function safeParseCookieValue(value: string): string {
+//   if (!value) return value
+  
+//   // If it's a base64 encoded value that starts with "base64-eyJ"
+//   if (value.startsWith('base64-eyJ')) {
+//     try {
+//       // Extract the base64 part (remove "base64-" prefix)
+//       const base64Content = value.substring(7)
+//       // Decode and return as string without parsing as JSON
+//       const decoded = atob(base64Content)
+//       return decoded
+//     } catch (error) {
+//       console.warn(`Failed to decode base64 cookie value: ${value.substring(0, 20)}...`)
+//       return ''
+//     }
+//   }
+  
+//   return value
+// }
+
+// export const createServerClient = async () => {
+//   const cookieStore = await cookies()  // <-- ADD await here
+
+//   try {
+//     console.log('Creating real Supabase server client')
+    
+//     return createSupabaseServerClient<Database>(
+//       process.env.NEXT_PUBLIC_SUPABASE_URL!,
+//       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+//       {
+//         cookies: {
+//           get(name: string) {
+//             try {
+//               const cookie = cookieStore.get(name)
+//               if (!cookie?.value) return undefined
+              
+//               // Parse and clean the cookie value
+//               const cleanValue = safeParseCookieValue(cookie.value)
+//               return cleanValue || undefined
+//             } catch (error) {
+//               console.warn(`Failed to get cookie ${name}:`, error)
+//               return undefined
+//             }
+//           },
+//           set(name: string, value: string, options: any) {
+//             try {
+//               cookieStore.set({ name, value, ...options })
+//             } catch (error) {
+//               console.warn(`Failed to set cookie ${name}:`, error)
+//               // Ignore error in server component
+//             }
+//           },
+//           remove(name: string, options: any) {
+//             try {
+//               cookieStore.set({ name, value: '', ...options, maxAge: 0 })
+//             } catch (error) {
+//               console.warn(`Failed to remove cookie ${name}:`, error)
+//               // Ignore error in server component
+//             }
+//           },
+//         },
+//       }
+//     )
+//   } catch (error) {
+//     console.error('Fatal error creating Supabase server client:', error)
+//     // Only return mock client if there's a fatal error
+//     return {
+//       from: (table: string) => ({ 
+//         select: () => Promise.resolve({ data: [], error: null }),
+//         insert: () => Promise.resolve({ data: [], error: null }),
+//         update: () => Promise.resolve({ data: [], error: null }),
+//         delete: () => Promise.resolve({ data: [], error: null }),
+//       }),
+//       auth: {
+//         getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+//         getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+//       }
+//     } as any
+//   }
+// }

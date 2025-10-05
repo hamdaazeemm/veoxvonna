@@ -4,26 +4,123 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Lock the app to a clean black/white palette */
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --bg: 255, 255, 255; /* white */
+  --fg: 17, 17, 17;    /* near-black */
+  --muted: 115, 115, 115; /* gray-500 */
+  --border: 229, 229, 229; /* gray-200 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+html, body {
+  height: 100%;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+}
+
+@layer components {
+  .mono-card {
+    @apply bg-white border border-gray-200 rounded-lg shadow-sm;
+  }
+  .mono-card-header {
+    @apply px-6 py-4 border-b border-gray-200 bg-gray-50;
+  }
+  .mono-card-body {
+    @apply px-6 py-4;
+  }
+  .mono-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-black;
+  }
+  .mono-select {
+    @apply px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:border-black;
+  }
+  .mono-btn {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-black rounded-md text-sm font-medium text-white bg-black hover:bg-white hover:text-black transition-colors;
+  }
+  .mono-btn-ghost {
+    @apply inline-flex items-center justify-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-900 bg-white hover:bg-gray-100 transition-colors;
+  }
+  .mono-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-gray-300 text-gray-800 bg-white;
+  }
+}
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, transform, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .dark\:bg-gray-900 {
+    background-color: #111827;
+  }
+  
+  .dark\:text-white {
+    color: #fff;
+  }
+}
+
+/* Add to globals.css */
+.quick-action-btn {
+  background-color: #000 !important;
+  color: #fff !important;
+  padding: 20px 28px !important;
+  font-weight: bold !important;
+  font-size: 18px !important;
+  border-radius: 12px !important;
+  min-width: 160px !important;
+  text-align: center !important;
+  border: 2px solid #374151 !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.quick-action-btn:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+.quick-actions-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+  margin-bottom: 2rem !important;
+  overflow-x: auto !important;
+  padding-bottom: 12px !important;
 }

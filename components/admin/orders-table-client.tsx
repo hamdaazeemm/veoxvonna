@@ -153,15 +153,15 @@ export default function OrdersTableClient({ fromDate, toDate }: OrdersTableClien
   return (
     <div>
       <ErrorBanner />
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="mono-card overflow-hidden">
       {/* Results Summary */}
-      <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+      <div className="mono-card-header">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h3 className="text-lg font-medium text-gray-900">
+            <h3 className="text-lg font-medium text-black">
               Orders
             </h3>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <span className="mono-badge">
               {filteredOrders.length} {filteredOrders.length === 1 ? 'order' : 'orders'}
             </span>
           </div>
@@ -174,7 +174,7 @@ export default function OrdersTableClient({ fromDate, toDate }: OrdersTableClien
             <button
               onClick={refreshData}
               disabled={isLoading}
-              className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-800 disabled:opacity-50"
+              className="flex items-center gap-1 text-sm text-gray-700 hover:text-black disabled:opacity-50"
             >
               <svg 
                 className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} 
@@ -196,7 +196,7 @@ export default function OrdersTableClient({ fromDate, toDate }: OrdersTableClien
             <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No orders found</h3>
+            <h3 className="mt-2 text-sm font-medium text-black">No orders found</h3>
             <p className="mt-1 text-sm text-gray-500">
               {(fromDate || toDate) 
                 ? 'Try adjusting your date range or clear the filters to see all orders.'
@@ -210,25 +210,25 @@ export default function OrdersTableClient({ fromDate, toDate }: OrdersTableClien
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Order Number
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Customer
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Amount
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Payment
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
@@ -243,30 +243,23 @@ export default function OrdersTableClient({ fromDate, toDate }: OrdersTableClien
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Link 
                       href={`/admin/orders/${order.order_id}`}
-                      className="text-blue-600 hover:text-blue-900 font-medium"
+                      className="text-black underline underline-offset-4 hover:no-underline"
                     >
                       {order.order_number}
                     </Link>
                   </td>
                   
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{order.customer_name}</div>
+                    <div className="text-sm text-black">{order.customer_name}</div>
                     <div className="text-sm text-gray-500">{order.customer_phone}</div>
                   </td>
                   
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-black">
                     Rs. {order.final_amount.toLocaleString()}
                   </td>
                   
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                      order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                      order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
+                    <span className={`mono-badge`}>
                       {order.status}
                     </span>
                   </td>
@@ -282,11 +275,11 @@ export default function OrdersTableClient({ fromDate, toDate }: OrdersTableClien
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link
                       href={`/admin/orders/${order.order_id}`}
-                      className="text-blue-600 hover:text-blue-900 mr-3"
+                      className="mr-3 underline underline-offset-4 text-black hover:no-underline"
                     >
                       View
                     </Link>
-                    <button className="text-green-600 hover:text-green-900">
+                    <button className="mono-btn px-3 py-1 text-xs">
                       Process
                     </button>
                   </td>

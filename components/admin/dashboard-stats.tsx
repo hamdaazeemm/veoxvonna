@@ -33,7 +33,7 @@ function formatPercentage(percent: number): string {
 }
 
 export default async function DashboardStats() {
-  const supabase = await createServerClient()
+  const supabase = createServerClient()
   
   // Get today's date range - use UTC for consistency
   const today = new Date()
@@ -120,34 +120,27 @@ export default async function DashboardStats() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {/* Today's Orders */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-2">Today's Orders</h3>
-        <p className="text-3xl font-bold">{todayOrdersCount}</p>
-        <p className="text-gray-600 text-sm">
-          Rs. {formatNumber(todayRevenueTotal)}
-        </p>
+      <div className="mono-card p-6">
+        <h3 className="text-sm font-medium text-gray-700">Today's Orders</h3>
+        <p className="mt-2 text-3xl font-bold text-black">{todayOrdersCount}</p>
+        <p className="text-gray-600 text-sm">Rs. {formatNumber(todayRevenueTotal)}</p>
       </div>
-      
-      {/* Pending Orders */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-2">Pending Orders</h3>
-        <p className="text-3xl font-bold">{pendingOrdersCount}</p>
-        <p className="text-blue-600 text-sm">Awaiting confirmation</p>
+
+      <div className="mono-card p-6">
+        <h3 className="text-sm font-medium text-gray-700">Pending Orders</h3>
+        <p className="mt-2 text-3xl font-bold text-black">{pendingOrdersCount}</p>
+        <p className="text-gray-600 text-sm">Awaiting confirmation</p>
       </div>
-      
-      {/* Low Stock Alerts */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-2">Low Stock</h3>
-        <p className="text-3xl font-bold">{lowStockCount}</p>
+
+      <div className="mono-card p-6">
+        <h3 className="text-sm font-medium text-gray-700">Low Stock</h3>
+        <p className="mt-2 text-3xl font-bold text-black">{lowStockCount}</p>
         <p className="text-gray-600 text-sm">Products need restocking</p>
       </div>
-      
-      {/* Total Revenue */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold mb-2">Monthly Revenue</h3>
-        <p className="text-3xl font-bold">Rs. {formatNumber(currentMonthRevenueTotal)}</p>
-        <p className={`text-sm ${revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+      <div className="mono-card p-6">
+        <h3 className="text-sm font-medium text-gray-700">Monthly Revenue</h3>
+        <p className="mt-2 text-3xl font-bold text-black">Rs. {formatNumber(currentMonthRevenueTotal)}</p>
+        <p className={`text-sm ${revenueChange >= 0 ? 'text-gray-800' : 'text-gray-800'}`}>
           {revenueChange >= 0 ? '↑' : '↓'} {formatPercentage(Math.abs(revenueChange))} from last month
         </p>
       </div>

@@ -19,12 +19,16 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <AdminSidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader user={user} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto">
-          <div className="container mx-auto px-6 py-8">
+    <div className="h-screen bg-white text-black">
+      {/* Fixed sidebar with integrated header */}
+      <div className="fixed inset-y-0 left-0 w-64 border-r border-gray-200 bg-white overflow-hidden">
+        <AdminSidebar user={user} />
+      </div>
+
+      {/* Content area with left padding equal to sidebar width */}
+      <div className="pl-64 h-full overflow-y-auto">
+        <main className="min-h-full">
+          <div className="max-w-7xl mx-auto px-6 py-8">
             {children}
           </div>
         </main>

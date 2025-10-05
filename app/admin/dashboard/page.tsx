@@ -89,17 +89,26 @@ export default async function AdminDashboard() {
       <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
       
       {/* Quick Actions */}
-      <QuickActions />
+      <section>
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">Quick Actions</h2>
+        <QuickActions />
+      </section>
       
       {/* Key Metrics with Suspense */}
-      <Suspense fallback={<StatsLoading />}>
-        <DashboardStats />
-      </Suspense>
+      <section className="mt-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">Key Metrics</h2>
+        <Suspense fallback={<StatsLoading />}>
+          <DashboardStats />
+        </Suspense>
+      </section>
       
       {/* Recent Activity with Suspense */}
-      <Suspense fallback={<ActivityLoading />}>
-        <RecentActivity />
-      </Suspense>
+      <section className="mt-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">Recent Activity</h2>
+        <Suspense fallback={<ActivityLoading />}>
+          <RecentActivity />
+        </Suspense>
+      </section>
     </div>
   )
 }

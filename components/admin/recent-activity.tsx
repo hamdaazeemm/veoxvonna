@@ -20,7 +20,7 @@ interface InventoryLog {
 }
 
 export default async function RecentActivity() {
-  const supabase = await createServerClient()
+  const supabase = createServerClient()
   
   // Get recent orders with proper typing
   const { data: recentOrders } = await supabase
