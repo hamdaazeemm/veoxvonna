@@ -1,4 +1,5 @@
-// lib/supabase/action-client.ts
+
+// lib/supabase/action-client.ts - FIXED VERSION
 import { cookies } from "next/headers";
 import { createServerClient as createSupabaseServerClient } from "@supabase/ssr";
 import type { Database } from "@/lib/supabase/types";
@@ -11,15 +12,22 @@ export const createActionClient = async () => {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        // Use the new getAll() method
-        getAll() {
-          return cookieStore.getAll();
+        get(name: string) {
+          return cookieStore.get(name)?.value
         },
-        // Use the new setAll() method
-        setAll(cookiesToSet: { name: string; value: string; options: any }[]) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
+        set(name: string, value: string, options: any) {
+          cookieStore.set(name, value, {
+            ...options,
+            sameSite: 'lax',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+          })
+        },
+        remove(name: string, options: any) {
+          cookieStore.set(name, '', {
+            ...options,
+            maxAge: 0
+          })
         },
       },
     }

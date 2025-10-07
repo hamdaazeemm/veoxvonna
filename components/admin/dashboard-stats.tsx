@@ -33,7 +33,7 @@ function formatPercentage(percent: number): string {
 }
 
 export default async function DashboardStats() {
-  const supabase = createServerClient()
+  const supabase = await createServerClient()
   
   // Get today's date range - use UTC for consistency
   const today = new Date()

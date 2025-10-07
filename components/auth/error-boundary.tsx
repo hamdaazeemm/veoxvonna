@@ -1,3 +1,4 @@
+// components/auth/error-boundary.tsx
 'use client'
 
 import React from 'react'

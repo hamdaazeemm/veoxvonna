@@ -94,3 +94,33 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// ADD THIS DELETE METHOD
+export async function DELETE(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const email = url.searchParams.get("email");
+
+    if (!email) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
+
+    const supabase = await createServerClient();
+    
+    const { error } = await supabase
+      .from("cart_items")
+      .delete()
+      .eq("customer_email", email);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Internal server error" }, 
+      { status: 500 }
+    );
+  }
+}
