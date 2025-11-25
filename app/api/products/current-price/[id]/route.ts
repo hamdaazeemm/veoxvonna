@@ -1,16 +1,44 @@
+
+// API route to get current price of a product considering active sales campaigns
+// and product's sale status
+//app/api/products/current-price/[id]/route.ts
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+// Define types for the query results
+type ProductData = {
+  product_id: number
+  price: number
+  sale_price: number | null
+  is_on_sale: boolean
+  category_id: number
+}
+
+type CampaignData = {
+  campaign_id: number
+  is_active: boolean
+  start_date: string
+  end_date: string
+  applies_to: string
+  target_categories: number[] | null
+  target_products: number[] | null
+  campaign_type: string
+  discount_value: number | null
+}
+
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = await createServerClient()
 
-    const productId = Number(params.id)
+    // Await params in Next.js 15
+    const { id } = await params
+    const productId = Number(id)
+    
     const { data: product, error: prodErr } = await supabase
       .from('products')
       .select('product_id, price, sale_price, is_on_sale, category_id')
       .eq('product_id', productId)
-      .single()
+      .single<ProductData>()
     if (prodErr || !product) throw prodErr || new Error('Product not found')
 
     // Base price
@@ -24,6 +52,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
       .eq('is_active', true)
       .lte('start_date', now)
       .gte('end_date', now)
+      .returns<CampaignData[]>()
 
     if (campaigns && campaigns.length) {
       for (const c of campaigns) {
@@ -49,6 +78,3 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     return NextResponse.json({ error: error?.message || 'Failed to compute price' }, { status: 500 })
   }
 }
-
-
-

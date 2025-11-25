@@ -58,12 +58,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
       
-      <AddToCartButton 
+      {/* <AddToCartButton 
         productId={product.product_id}
         name={product.name}
         price={currentPrice}
         image_url={imageUrl}
-      />
+      /> */}
     </div>
   );
 }

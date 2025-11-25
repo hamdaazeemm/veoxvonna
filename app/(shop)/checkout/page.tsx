@@ -443,7 +443,8 @@ export default function CheckoutPage() {
           quantity: item.quantity,
           unit_price: item.price,
           total_price: item.price * item.quantity,
-          selected_attributes: item.selected_attributes,
+         // selected_attributes: item.selected_attributes,
+          selected_attributes: item.selected_attributes || {}, // ✅ MUST include size
         })),
       };
 

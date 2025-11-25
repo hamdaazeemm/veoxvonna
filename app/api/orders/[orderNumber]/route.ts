@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/supabase/types'
-
+import { ProductService } from '@/lib/services/product-service'
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ orderNumber: string }> }

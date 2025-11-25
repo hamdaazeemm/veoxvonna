@@ -10,8 +10,11 @@
   --fg: 17, 17, 17;    /* near-black */
   --muted: 115, 115, 115; /* gray-500 */
   --border: 229, 229, 229; /* gray-200 */
+  --offwhite-bg: #e8e7da; /* soft warm offwhite */
 }
-
+.offwhite-bg {
+  background-color: var(--offwhite-bg);
+}
 html, body {
   height: 100%;
 }
@@ -20,7 +23,36 @@ body {
   background-color: rgb(var(--bg));
   color: rgb(var(--fg));
 }
+/* Ensure images are responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
 
+/* Better mobile touch targets */
+button, 
+a {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Improve text readability on mobile */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  p {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
 @layer components {
   .mono-card {
     @apply bg-white border border-gray-200 rounded-lg shadow-sm;
@@ -123,4 +155,28 @@ body {
   margin-bottom: 2rem !important;
   overflow-x: auto !important;
   padding-bottom: 12px !important;
+}
+/* Add to your globals.css */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }

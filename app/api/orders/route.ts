@@ -388,7 +388,7 @@ import { createServerClient } from '@/lib/supabase/server'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/supabase/types'
 import { DbUtils } from '@/lib/supabase/db-utils'
-
+import { ProductService } from '@/lib/services/product-service'
 
 export async function GET() {
   try {
@@ -535,7 +535,7 @@ export async function POST(req: Request) {
       discount_amount: Number(body.discount_amount) || 0,
       delivery_charges: Number(body.delivery_charges) || 0,
       final_amount: Number(body.final_amount),
-      status: "pending",
+      status: "confirmed",
       payment_method: body.payment_method || "cod",
       payment_status: "pending",
       delivery_address_id: addressId,
@@ -575,32 +575,39 @@ export async function POST(req: Request) {
     }
 
     // Step 6: Update product stock
-    for (const item of body.items) {
-      const { data: product } = await db.selectOne("products", "product_id", item.product_id);
+    // for (const item of body.items) {
+    //   const { data: product } = await db.selectOne("products", "product_id", item.product_id);
 
-      if (product) {
-        const newStock = product.stock_quantity - item.quantity;
+    //   if (product) {
+    //     const newStock = product.stock_quantity - item.quantity;
         
-        await db.updateOne("products", item.product_id, "product_id", {
-          stock_quantity: newStock,
-        });
+    //     await db.updateOne("products", item.product_id, "product_id", {
+    //       stock_quantity: newStock,
+    //     });
 
-        await db.insertOne("inventory_logs", {
-          product_id: item.product_id,
-          change_type: "sale",
-          quantity_change: -item.quantity,
-          order_id: order.order_id,
-          previous_stock: product.stock_quantity,
-          new_stock: newStock,
-          notes: `Order ${order.order_number}`,
-        });
-      }
-    }
+    //     await db.insertOne("inventory_logs", {
+    //       product_id: item.product_id,
+    //       change_type: "sale",
+    //       quantity_change: -item.quantity,
+    //       order_id: order.order_id,
+    //       previous_stock: product.stock_quantity,
+    //       new_stock: newStock,
+    //       notes: `Order ${order.order_number}`,
+    //     });
+    //   }
+    // }
+    const inventoryUpdated = await ProductService.updateInventoryAfterOrder(order.order_id)
+
+if (!inventoryUpdated) {
+  console.error('Failed to update inventory for order:', order.order_id)
+  // Don't fail the order, but log it for manual intervention
+}
 
     return NextResponse.json({
       success: true,
       order_id: order.order_id,
       order_number: order.order_number,
+      inventory_updated: inventoryUpdated
     });
   } catch (error) {
     console.error("Order creation error:", error);

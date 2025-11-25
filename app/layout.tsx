@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import '@/lib/utils/force-cookie-clear'
+import { SidebarProvider } from '@/context/sidebar-context';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,7 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+         <SidebarProvider>
+{children}
+         </SidebarProvider>
+        
       </body>
     </html>
   )

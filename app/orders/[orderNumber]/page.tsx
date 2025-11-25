@@ -59,7 +59,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-6">
-        <Link href="/orders" className="text-blue-600 hover:underline">
+        <Link href="/" className="text-blue-600 hover:underline">
           ← Back to Orders
         </Link>
       </div>
