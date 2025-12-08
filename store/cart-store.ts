@@ -123,7 +123,40 @@
 //     set({ items: [] })
 //   }
 // }))
-
+// {
+//   "name": "veoxvonna",
+//   "version": "0.1.0",
+//   "private": true,
+//   "scripts": {
+//     "dev": "next dev --hostname 0.0.0.0",
+//     "build": "next build",
+//     "start": "next start",
+//     "lint": "eslint",
+//     "tailwind:init": "tailwindcss init -p"
+//   },
+//   "dependencies": {
+//     "@supabase/ssr": "^0.8.0",
+//     "@supabase/supabase-js": "^2.86.2",
+//     "lucide-react": "^0.460.0",
+//     "next": "^14.2.11",
+//     "react": "^18.2.0",
+//     "react-dom": "^18.2.0",
+//     "tailwindcss": "^3.4.1",
+//     "zustand": "^5.0.8"
+//   },
+//   "devDependencies": {
+//     "@eslint/eslintrc": "^3",
+//     "@tailwindcss/postcss": "^4.1.13",
+//     "@types/node": "^20.17.16",
+//     "@types/react": "^18.2.0",
+//     "@types/react-dom": "^18.2.0",
+//     "autoprefixer": "^10.4.21",
+//     "eslint": "^8.56.0",
+//     "eslint-config-next": "14.0.0",
+//     "postcss": "^8.5.6",
+//     "typescript": "^5.3.3"
+//   }
+// }
 
 
 // store/cart-store.ts
