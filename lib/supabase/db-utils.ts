@@ -3,7 +3,15 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from './types'
 
 type Tables = Database['public']['Tables']
+// Sales Campaigns
+type SalesCampaignRow = Tables['sales_campaigns']['Row']
+type SalesCampaignUpdate = Tables['sales_campaigns']['Update']
+type SalesCampaignInsert = Tables['sales_campaigns']['Insert']
 
+// Products
+type ProductRow = Tables['products']['Row']
+type ProductUpdate = Tables['products']['Update']
+type ProductInsert = Tables['products']['Insert']
 export class DbUtils {
   constructor(private supabase: SupabaseClient<Database>) {}
 
@@ -66,4 +74,5 @@ export class DbUtils {
     
     return { data: data as any, error }
   }
+  
 }

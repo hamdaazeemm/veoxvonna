@@ -1,4 +1,4 @@
-// components/auth/error-boundary.tsx
+// // components/auth/error-boundary.tsx
 'use client'
 
 import React from 'react'
@@ -20,22 +20,26 @@ export class AuthErrorBoundary extends React.Component<Props, State> {
   }
 
   static getDerivedStateFromError(error: Error): State {
-    // Update state so the next render will show the fallback UI
     return { hasError: true, error }
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log the error for debugging
+  async componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Auth Error Boundary caught an error:', error, errorInfo)
     
-    // If it's a cookie-related error, try to clear cookies
     if (error.message.includes('cookie') || error.message.includes('JSON.parse')) {
-      console.log('Detected cookie parsing error, clearing cookies...')
+      console.log('Detected cookie parsing error, attempting to clear cookies...')
+      
       try {
-        // Clear cookies
         if (typeof window !== 'undefined') {
-          const { clearSupabaseCookies } = require('@/lib/utils/cookie-cleaner')
-          clearSupabaseCookies()
+          // Use dynamic import with error handling
+          try {
+            const { clearSupabaseCookies } = await import('@/lib/utils/cookie-cleaner')
+            clearSupabaseCookies()
+          } catch (importError) {
+            console.warn('Could not import cookie-cleaner, using fallback method:', importError)
+            // Fallback: clear cookies manually
+            this.clearCookiesManually()
+          }
         }
       } catch (clearError) {
         console.error('Failed to clear cookies:', clearError)
@@ -43,9 +47,26 @@ export class AuthErrorBoundary extends React.Component<Props, State> {
     }
   }
 
+  private clearCookiesManually() {
+    // Clear Supabase-related cookies
+    const cookies = document.cookie.split(';')
+    for (let cookie of cookies) {
+      const eqPos = cookie.indexOf('=')
+      const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim()
+      
+      // Clear Supabase-related cookies
+      if (name.includes('supabase') || name.includes('sb-') || name.includes('auth')) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+      }
+    }
+    
+    // Also clear localStorage
+    localStorage.clear()
+    sessionStorage.clear()
+  }
+
   render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
       return this.props.fallback || (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
           <div className="max-w-md w-full bg-white p-8 rounded-lg shadow text-center">
@@ -65,12 +86,15 @@ export class AuthErrorBoundary extends React.Component<Props, State> {
               >
                 Retry
               </button>
-              <a
-                href="/auth/clear-cookies"
-                className="w-full bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors inline-block"
+              <button
+                onClick={() => {
+                  this.clearCookiesManually()
+                  window.location.reload()
+                }}
+                className="w-full bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
               >
                 Clear Auth Data
-              </a>
+              </button>
             </div>
           </div>
         </div>

@@ -32,44 +32,7 @@ type SizeStock = {
 }
 
 export class ProductService {
-  // Get products by category (server-side)
-  // static async getProductsByCategory(categoryName: string, limit = 20,categoryId?: number, includeSubcategories = true) {
-  //   const supabase = await createServerClient()
-  //       let categoryIds = [categoryId];
-    
-  //   if (includeSubcategories) {
-  //   // Get subcategories with type assertion
-  //   const { data: subcats } = await supabase
-  //     .from('categories')
-  //     .select('category_id')
-  //     .eq('parent_category_id', categoryId)
-  //     .returns<CategoryData[]>()
-    
-  //   if (subcats) {
-  //     categoryIds = [...categoryIds, ...subcats.map(c => c.category_id)];
-  //   }
-  // }
-  //   const { data: products, error } = await supabase
-  //     .from('products')
-  //     .select(`
-  //       *,
-  //       images:product_images(*),
-  //       category:categories(*)
-  //     `)
-  //     .eq('is_active', true)
-  //     .in('category_id', categoryIds)
-  //     .eq('categories.name', categoryName.toLowerCase())
-  //     .order('created_at', { ascending: false })
-  //     .limit(limit)
-
-  //   if (error) {
-  //     console.error('Error fetching products:', error)
-  //     return []
-  //   }
-
-  //   return products as Product[]
-  // }
-// Add these type definitions at the top of your product-service.ts file
+  
 
   static async getVideos(limit = 10): Promise<Video[]> {
     const supabase = await createServerClient()
@@ -345,27 +308,41 @@ static async getProductBySlug(slug: string): Promise<IProduct | null> {
 
  // Get current product price (with sales and flash sales)
 // Get current product price (with sales and flash sales)
-static async getCurrentPrice(productId: number) {
-  const supabase = createClient();
+// static async getCurrentPrice(productId: number) {
+//   const supabase = createClient();
 
-  const { data, error } = await supabase.rpc<number, { p_product_id: number }>(
-    "get_current_price",
-    { p_product_id: productId }
-  );
-//  const { data, error } = await supabase.rpc(
+//   const { data, error } = await supabase.rpc<number, { p_product_id: number }>(
 //     "get_current_price",
 //     { p_product_id: productId }
 //   );
+// //  const { data, error } = await supabase.rpc(
+// //     "get_current_price",
+// //     { p_product_id: productId }
+// //   );
+//   if (error) {
+//     console.error("Error getting current price:", error);
+//     return null;
+//   }
+
+//   return data;
+// }
+
+static async getCurrentPrice(productId: number): Promise<number | null> {
+  const supabase = createClient();
+
+  // Use type assertion to bypass strict RPC typing
+  const { data, error } = await (supabase.rpc as any)(
+    "get_current_price",
+    { p_product_id: productId }
+  );
+
   if (error) {
     console.error("Error getting current price:", error);
     return null;
   }
 
-  return data;
+  return data as number;
 }
-
-
-
   // Check product stock
 //  static async checkProductStock(productId: number, quantity = 1) {
 //   const supabase = createClient()
