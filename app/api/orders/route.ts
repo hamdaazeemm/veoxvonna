@@ -389,7 +389,7 @@ import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/lib/supabase/types'
 import { DbUtils } from '@/lib/supabase/db-utils'
 import { ProductService } from '@/lib/services/product-service'
-
+import { emailService } from '@/lib/email/email-service'
 export async function GET() {
   try {
     // Create a direct Supabase client for API routes
@@ -574,40 +574,75 @@ export async function POST(req: Request) {
       }
     }
 
-    // Step 6: Update product stock
-    // for (const item of body.items) {
-    //   const { data: product } = await db.selectOne("products", "product_id", item.product_id);
-
-    //   if (product) {
-    //     const newStock = product.stock_quantity - item.quantity;
-        
-    //     await db.updateOne("products", item.product_id, "product_id", {
-    //       stock_quantity: newStock,
-    //     });
-
-    //     await db.insertOne("inventory_logs", {
-    //       product_id: item.product_id,
-    //       change_type: "sale",
-    //       quantity_change: -item.quantity,
-    //       order_id: order.order_id,
-    //       previous_stock: product.stock_quantity,
-    //       new_stock: newStock,
-    //       notes: `Order ${order.order_number}`,
-    //     });
-    //   }
-    // }
+   
     const inventoryUpdated = await ProductService.updateInventoryAfterOrder(order.order_id)
 
 if (!inventoryUpdated) {
   console.error('Failed to update inventory for order:', order.order_id)
   // Don't fail the order, but log it for manual intervention
-}
+} 
+// ========== STEP 7: SEND EMAILS ==========
+    const emailResults = {
+      customerEmailSent: false,
+      adminEmailSent: false
+    }
+
+    try {
+      // Send order confirmation to customer
+      emailResults.customerEmailSent = await emailService.sendOrderConfirmation(
+        body.customer_email,
+        {
+          orderNumber: order.order_number || `ORD-${order.order_id}`,
+          customerName: body.customer_name,
+          customerEmail: body.customer_email,
+          customerPhone: body.customer_phone,
+          orderDate: new Date().toLocaleDateString('en-IN', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }),
+          items: body.items.map((item: any) => ({
+            name: item.product_name,
+            quantity: item.quantity,
+            unitPrice: item.unit_price,
+            totalPrice: item.total_price,
+            size: item.selected_attributes?.size,
+            color: item.selected_attributes?.color,
+            attributes: item.selected_attributes
+          })),
+          subtotal: body.total_amount,
+          discount: body.discount_amount || 0,
+          deliveryCharges: body.delivery_charges || 0,
+          totalAmount: body.final_amount,
+          shippingAddress: body.delivery_address,
+          paymentMethod: body.payment_method || 'COD',
+        }
+      )
+
+      // Send admin notification
+      emailResults.adminEmailSent = await emailService.sendAdminNotification({
+        orderNumber: order.order_number || `ORD-${order.order_id}`,
+        customerName: body.customer_name,
+        customerEmail: body.customer_email,
+        customerPhone: body.customer_phone,
+        totalAmount: body.final_amount,
+        paymentMethod: body.payment_method || 'COD',
+      })
+
+      console.log('Email sending results:', emailResults)
+
+    } catch (emailError) {
+      console.error('Error sending emails:', emailError)
+      // Don't fail the order if emails fail
+    }
 
     return NextResponse.json({
       success: true,
       order_id: order.order_id,
       order_number: order.order_number,
-      inventory_updated: inventoryUpdated
+      inventory_updated: inventoryUpdated,
+       emails_sent: emailResults
     });
   } catch (error) {
     console.error("Order creation error:", error);

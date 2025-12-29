@@ -33,9 +33,7 @@ export default async function ProductsPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">All Products</h1>
         <p className="text-gray-600">Browse our complete collection</p>
-        <p className="text-sm text-gray-500 mt-2">
-          {products.length} products available
-        </p>
+       
       </div>
 
       {products.length > 0 ? (

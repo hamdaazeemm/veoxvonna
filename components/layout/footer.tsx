@@ -89,14 +89,16 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white mt-auto"> {/* Changed to bg-black */}
+   // <footer className="bg-black text-white mt-auto"> {/* Changed to bg-blue */}
+   <footer className="bg-[#141313] text-gray-800 mt-auto">
+
       <div className="container mx-auto px-4 py-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Brand & About - Smaller */}
           <div className="lg:col-span-2">
-            <h3 className="text-base font-bold mb-1">Veoxvonna</h3>
+            <h3 className="text-base font-bold mb-1">Veuxvonna</h3>
             <p className="text-gray-400 text-xs">
-              © {new Date().getFullYear()} Veoxvonna. All rights reserved.
+              © {new Date().getFullYear()} Veuxvonna. All rights reserved.
             </p>
           </div>
 
@@ -125,8 +127,8 @@ export default function Footer() {
             <div className="space-y-1">
               <div>
                 <p className="text-gray-400 text-xs">Email</p>
-                <a href="mailto:veuxvonna@gmail.com" className="text-white hover:text-gray-300 text-xs">
-                  veuxvonna@gmail.com
+                <a href="mailto:shopveuxvonna@gmail.com" className="text-white hover:text-gray-300 text-xs">
+                  shopveuxvonna@gmail.com
                 </a>
               </div>
               

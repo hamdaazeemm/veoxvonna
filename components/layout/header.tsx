@@ -134,7 +134,7 @@ export default function Header() {
         </button>
 
         <Link href="/" className="text-2xl font-bold">
-          Veoxvonna
+          Veuxvonna
         </Link>
       </div>
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to {{storeName}}</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #f8f9fa; padding: 20px; text-align: center; border-radius: 5px; margin-bottom: 30px; }
+        .welcome-message { background: #fff; padding: 20px; }
+        .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6; font-size: 12px; color: #6c757d; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Welcome to {{storeName}}!</h1>
+        <p>Beautiful Kids Clothing</p>
+    </div>
+
+    <div class="welcome-message">
+        <h2>Hi {{name}}!</h2>
+        
+        <p>Thank you for joining our community of happy parents who trust us for their children's clothing needs.</p>
+        
+        <p>At {{storeName}}, we offer:</p>
+        <ul>
+            <li>High-quality, comfortable kids clothing</li>
+            <li>Age-appropriate sizes (3-8 years)</li>
+            <li>Safe, child-friendly materials</li>
+            <li>Free shipping on orders above ₹999</li>
+            <li>Easy returns & exchanges</li>
+        </ul>
+
+        <p>Start shopping now at our website: <a href="{{storeWebsite}}">{{storeWebsite}}</a></p>
+
+        <p>If you have any questions, feel free to reply to this email or call us at {{storePhone}}.</p>
+
+        <p>Welcome aboard!</p>
+        <p>The {{storeName}} Team</p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; {{year}} {{storeName}}. All rights reserved.</p>
+    </div>
+</body>
+</html>

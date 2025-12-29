@@ -1,7 +1,9 @@
+
+
 // components/mobile-swipe-carousel.tsx
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -23,16 +25,75 @@ export default function MobileSwipeCarousel({ slides }: MobileSwipeCarouselProps
   const [currentIndex, setCurrentIndex] = useState(0)
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  const [scrollLocked, setScrollLocked] = useState(true)
 
   // Minimum swipe distance
   const minSwipeDistance = 50
 
+  // Lock body scroll when component mounts and unlock when reaching last slide
+  useEffect(() => {
+    // Lock body scroll initially
+    document.body.style.overflow = 'hidden'
+    document.body.style.height = '100vh'
+    document.body.style.position = 'fixed'
+    document.body.style.width = '100%'
+
+    // Store the current scroll position
+    const scrollY = window.scrollY
+    document.body.style.top = `-${scrollY}px`
+
+    // Unlock when reaching last slide
+    if (currentIndex === slides.length - 1) {
+      const timer = setTimeout(() => {
+        setScrollLocked(false)
+        
+        // Restore scroll
+        const scrollY = parseInt(document.body.style.top || '0') * -1
+        document.body.style.overflow = ''
+        document.body.style.height = ''
+        document.body.style.position = ''
+        document.body.style.width = ''
+        document.body.style.top = ''
+        window.scrollTo(0, scrollY)
+      }, 300) // Small delay before unlocking
+      
+      return () => clearTimeout(timer)
+    }
+
+    return () => {
+      // Cleanup on unmount
+      document.body.style.overflow = ''
+      document.body.style.height = ''
+      document.body.style.position = ''
+      document.body.style.width = ''
+      document.body.style.top = ''
+    }
+  }, [currentIndex, slides.length])
+
+  // Prevent wheel and touch scroll when locked
+  useEffect(() => {
+    const preventScroll = (e: Event) => {
+      if (scrollLocked) {
+        e.preventDefault()
+      }
+    }
+
+    // Use passive: false to allow preventDefault
+    document.addEventListener('touchmove', preventScroll, { passive: false })
+    document.addEventListener('wheel', preventScroll, { passive: false })
+
+    return () => {
+      document.removeEventListener('touchmove', preventScroll)
+      document.removeEventListener('wheel', preventScroll)
+    }
+  }, [scrollLocked])
+
   const nextSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
+    setCurrentIndex((prev) => (prev === slides.length - 1 ? prev : prev + 1))
   }, [slides.length])
 
   const prevSlide = useCallback(() => {
-    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
+    setCurrentIndex((prev) => (prev === 0 ? prev : prev - 1))
   }, [slides.length])
 
   const onTouchStart = (e: React.TouchEvent) => {
@@ -41,6 +102,10 @@ export default function MobileSwipeCarousel({ slides }: MobileSwipeCarouselProps
   }
 
   const onTouchMove = (e: React.TouchEvent) => {
+    // Prevent default scroll behavior when locked
+    if (scrollLocked && currentIndex < slides.length - 1) {
+      e.preventDefault()
+    }
     setTouchEnd(e.targetTouches[0].clientY)
   }
 
@@ -57,6 +122,17 @@ export default function MobileSwipeCarousel({ slides }: MobileSwipeCarouselProps
       prevSlide()
     }
   }
+
+  // Auto advance slides every 5 seconds
+  useEffect(() => {
+    if (!scrollLocked || currentIndex === slides.length - 1) return
+    
+    const interval = setInterval(() => {
+      nextSlide()
+    }, 5000)
+    
+    return () => clearInterval(interval)
+  }, [scrollLocked, currentIndex, nextSlide, slides.length])
 
   if (slides.length === 0) return null
 
@@ -85,6 +161,16 @@ export default function MobileSwipeCarousel({ slides }: MobileSwipeCarouselProps
               <Link 
                 href="/products"
                 className="inline-block bg-white bg-opacity-20 backdrop-blur-sm text-white border border-white border-opacity-30 px-6 py-3 rounded text-sm hover:bg-white hover:bg-opacity-30 transition-all duration-300"
+                onClick={(e) => {
+                  if (scrollLocked) {
+                    e.preventDefault()
+                    // Unlock scroll and navigate
+                    setScrollLocked(false)
+                    setTimeout(() => {
+                      window.location.href = '/products'
+                    }, 100)
+                  }
+                }}
               >
                 SHOP NOW
               </Link>
@@ -114,6 +200,20 @@ export default function MobileSwipeCarousel({ slides }: MobileSwipeCarouselProps
           <span className="text-[10px]">Swipe</span>
         </div>
       </div>
+
+      {/* Show "Scroll to continue" on last slide */}
+      {currentIndex === slides.length - 1 && scrollLocked && (
+        <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 text-white text-xs">
+          <div className="flex flex-col items-center space-y-1 animate-pulse">
+            <span className="text-[10px]">Scroll to continue</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
+
+
